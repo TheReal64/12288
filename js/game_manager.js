@@ -59,7 +59,7 @@ GameManager.prototype.addStartTiles = function () {
 // Adds a tile in a random position
 GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
-    var value = Math.random() < 0.5 ? 1 : Math.random() < 0.875 ? 2 : 3;
+    var value = Math.random() < 0.99 ? 1 : 2;
     var tile = new Tile(this.grid.randomAvailableCell(), value);
 
     this.grid.insertTile(tile);
@@ -126,11 +126,8 @@ GameManager.prototype.move = function (direction) {
         var next      = self.grid.cellContent(positions.next);
 
         // Only one merger per row traversal?
-        if (next && next.value === tile.value && !next.mergedFrom || next && next.value == 0 || next && tile.value == 0) {
-          
-	        var merged = new Tile(positions.next, tile.value * 2);
-          if(next && next.value == 2) merged.value = tile.value + 1;
-          if(next && tile.value == 1) merged.value = next.value + 2;
+        if (next && ((tile.value!==2 && next.value!==2) && (tile.value === next.value) || (tile.value === 1 && next.value === 2) || (tile.value === 2 && next.value === 1)) && !next.mergedFrom) {
+          var merged = new Tile(positions.next, tile.value+next.value);
           merged.mergedFrom = [tile, next];
 
           self.grid.insertTile(merged);
